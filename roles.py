@@ -4,6 +4,7 @@ from discord.ext import commands
 client = commands.Bot(command_prefix = ".")
 
 @client.command()
+@commands.has_permissions(manage_roles = True)
 async def role(ctx, member: discord.Member = None, *, role_name = None):
     if member is None:
         await ctx.send("Mention a member")
@@ -29,4 +30,10 @@ async def role(ctx, member: discord.Member = None, *, role_name = None):
     await member.add_roles(role)
     await ctx.send(f"{role.name} has been added to {member.mention}")
 
+@role.error
+async def role_perm(ctx, error):
+    if isinstance(error, commands.MissingPermissions):
+        await ctx.send("You are missing permissions")
+        
+        
 client.run("TOKEN")
